@@ -1,9 +1,13 @@
+using AkatsukiDokkanInterrogator.Configurations;
+using AkatsukiDokkanInterrogator.Helpers;
+using AkatsukiDokkanInterrogator.Models;
+using AkatsukiDokkanInterrogator.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Net.Http;
 
 namespace AkatsukiDokkanInterrogator
 {
@@ -19,8 +23,12 @@ namespace AkatsukiDokkanInterrogator
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllersWithViews();
+            services.Configure<GlobalServer>(options => Configuration.GetSection("GlobalServer").Bind(options));
+            services.Configure<UserAccount>(options => Configuration.GetSection("UserAccount").Bind(options));
+            services.AddScoped<IFetcherService, FetcherService>();
+            services.AddScoped<IUserAccountService, UserAccountService>();
+            services.AddHttpClient<FetcherService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
